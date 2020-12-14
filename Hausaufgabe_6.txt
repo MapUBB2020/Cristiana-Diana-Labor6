@@ -1,0 +1,16 @@
+Hausaufgabe 6 - Students (Deadline 12-te Woche - 15 Dezember 2020)
+
+----------------------------------------------------------------------------------------------------------------
+Problem:
+----------------------------------------------------------------------------------------------------------------
+Fahren Sie mit der für Labor 3 implementierten Lösung fort und implementieren Sie folgenden Anweisungen:
+Erstellen Sie ein JavaFX Anwendung für Studenten. Sie können:
+sich mit ihrem Namen anmelden
+sich für Kurse einschreiben
+ihre gesamten Credits ansehen
+Erstellen Sie ein JavaFX Anwendung für Lehrer. Sie können:
+sich mit ihrem Namen anmelden
+die für ihren Kurs die eingeschriebenen Studenten sehen
+Verwenden Sie die Observer Pattern, damit die Lehrer in Echtzeit sehen können, wann ein Student sich für seinen Kurs eingeschrieben hat.
+z.B. In einem Fenster registriert sich der Student für einen Kurs und in einem anderen Fenster sieht der Lehrer die Änderung, ohne die Anwendung neu zu starten
+Refaktorisieren Sie Ihren vorhandenen Code mit neuen Funktionen, die seit Java 8 gestartet wurden (Streams, Lambda Expressions, usw); (zumindest 1)
