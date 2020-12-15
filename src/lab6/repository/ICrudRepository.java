@@ -1,4 +1,4 @@
-package lab3.repository;
+package lab6.repository;
 
 /**
  * CRUD operations repository interface
@@ -9,7 +9,7 @@ public interface ICrudRepository<E> {
      * @param id -the id of the entity to be returned id must not be null
      * @return the entity with the specified id or null - if there is no entity with the given id
      */
-    E findOne(Long id);
+    E findOne(Integer id);
 
     /**
      * @return all entities
@@ -28,7 +28,7 @@ public interface ICrudRepository<E> {
      * @param id id must be not null
      * @return the removed entity or null if there is no entity with the given id
      */
-    E delete(Long id);
+    E delete(Integer id);
 
     /**
      * @param entity entity must not be null

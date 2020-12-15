@@ -1,4 +1,4 @@
-package lab3.controller;
+package lab6.controller;
 
 import org.junit.Assert;
 import org.junit.Test;

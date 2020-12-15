@@ -1,0 +1,7 @@
+100, Ion, Pop, 28, [1; 3]
+101, Ion, Popa, 26, [1]
+102, Diana, Budisan, 5, [2]
+103, Cristiana, Balan, 5, [2]
+104, Iuliana, Popa, 2, [3]
+105, Stefana, Rosca, 7, [3; 2]
+106, Silvia, Puiac, 7, [3; 2]
