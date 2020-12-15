@@ -45,8 +45,7 @@ public class Controller {
             if ((logFileRepository.eMails.get(i).substring(logFileRepository.eMails.get(i).length() - 16)).equals("@stud.ubbcluj.ro")) {
                 studEMails.add(logFileRepository.eMails.get(i)); //adaugam eMail-ul la lista de eMail-uri pentru studenti
                 studPasswords.add(logFileRepository.passwords.get(i)); //adaugam parola la lista de parole pentru studenti
-            }
-            else {
+            } else {
                 //daca eMail-ul nu are la sfarsit "@stud.ubbcluj.ro" => e profesor
                 teacherEMails.add(logFileRepository.eMails.get(i)); //adaugam eMail-ul la lista de eMail-uri pentru profesori
                 teacherPasswords.add(logFileRepository.passwords.get(i)); //adaugam parola la lista de parole pentru profesori
@@ -56,6 +55,7 @@ public class Controller {
 
     /**
      * ia ID-ul din parola
+     *
      * @param pswd parola de tip: ParolaID (ex: Parola123)
      * @return id student/teacher (ex: 123)
      */
@@ -65,7 +65,8 @@ public class Controller {
 
     /**
      * enrol a student in a course
-     * @param studId - id-ul studentului
+     *
+     * @param studId     - id-ul studentului
      * @param courseName - numele cursului
      * @return - "incorrect" daca nu a pus datele corect, "credits" daca studentul are mai mult de 30 de credite,
      * "enrolled" daca studentul a fost inregistrat cu succes, "already enrolled" daca studentul e deja inscris la cursul ales,
@@ -100,15 +101,69 @@ public class Controller {
                 List<Integer> studentsFromCourse = course.getStudentsEnrolled();
                 studentsFromCourse.add(student.getStudentId()); //salvam studentul in lista cu studenti ale cursului
                 return "enrolled";
-            }
-            else {
+            } else {
                 return "already enrolled";
             }
-        }
-        else {
+        } else {
             return "full";
         }
     }
 
+    public String showAvailableCourses() {
+        StringBuilder show = new StringBuilder();
+        CourseRepository courseRepository = new CourseRepository(allCourses);
+        if (courseRepository.findAll() == null) {
+            show.append("There are no courses!");
+            return show.toString();
+        }
+        for (Course course : courseRepository.findAll()) {
+            int available = course.getMaxEnrollment() - course.getStudentsEnrolled().size();
+            if (available > 0) {
+                if (available == 1) {
+                    show.append(course.getName()).append(": ").append(available).append(" free place\n");
+                } else {
+                    show.append(course.getName()).append(": ").append(available).append(" free places\n");
+                }
+            }
+        }
+        return show.toString();
+    }
+
+    public String showAllCourses() {
+        StringBuilder show = new StringBuilder();
+        CourseRepository courseRepository = new CourseRepository(allCourses);
+        if (courseRepository.findAll() == null) {
+            show.append("There are no courses!");
+            return show.toString();
+        }
+        for (Course course : courseRepository.findAll()) {
+            show.append(course.getName());
+            for (Teacher teacher : allTeachers) {
+                if (teacher.getTeacherId() == course.getTeacher()) {
+                    show.append(", teacher: ").append(teacher.getFirstName()).append(" ").append(teacher.getLastName()).append("\n");
+                }
+            }
+
+        }
+        return show.toString();
+    }
+
+    public String showMyCourses(int studentId) {
+        Student student = new Student();
+        for (Student stud : allStudents) {
+            if (stud.getStudentId() == studentId) {
+                student = stud;
+            }
+        }
+        StringBuilder show = new StringBuilder();
+        if (student.getEnrolledCourses().isEmpty()) {
+            show.append("You are not enrolled in any course");
+            return show.toString();
+        }
+        for (Course course : student.getEnrolledCourses()) {
+            show.append(course.getName()).append("\n");
+        }
+        return show.toString();
+    }
 
 }

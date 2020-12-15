@@ -17,6 +17,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import lab6.controller.Controller;
+import lab6.model.Student;
 import lab6.repository.LogFileRepository;
 
 import java.io.FileNotFoundException;
@@ -48,7 +49,7 @@ public class StartApp extends Application {
         Label labelEMail = new Label("Email Address: ");
         labelEMail.setFont(new Font("Arial", 24));
 
-        Label labelPassword = new Label("Password: ");
+        Label labelPassword = new Label("       Password: ");
         labelPassword.setFont(new Font("Arial", 24));
 
         //input email si password
@@ -129,7 +130,7 @@ public class StartApp extends Application {
         //total box pentru pagina de log in
         VBox totalBox = new VBox();
         totalBox.setSpacing(10);
-        totalBox.setPadding(new Insets(20, 0, 0, 125));
+        totalBox.setPadding(new Insets(20, 0, 0, 100));
         totalBox.getChildren().addAll(welcomeBox, logInBox, message);
         ((Group) logInScene.getRoot()).getChildren().add(totalBox);
 
@@ -146,6 +147,7 @@ public class StartApp extends Application {
             Label messageLabel = new Label();
             messageLabel.setFont(new Font("Arial", 20));
 
+
             //label course name
             Label courseName = new Label("Course: ");
             courseName.setFont(new Font("Arial", 24));
@@ -153,20 +155,33 @@ public class StartApp extends Application {
             TextField inputCourse = new TextField();
             inputCourse.setMaxWidth(500);
             inputCourse.setFont(new Font("Arial", 20));
-            inputCourse.setPromptText("Type the name of the course");
-            //TODO: VF DC INPUT STRING
 
             Button enrolMeButton = new Button("ENROL ME!");
             enrolMeButton.setPrefSize(170, 45);
             enrolMeButton.setStyle("-fx-background-color: #89B3F5");
             enrolMeButton.setOnAction((event1 -> {
-                switch (controller.registerStud(id[0], inputCourse.getText())) {
-                    case "enrolled" -> messageLabel.setText("YOU ARE NOW ENROLLED IN THE COURSE!"); //daca a reusit sa se inscrie
-                    case "credits" -> messageLabel.setText("YOU HAVE TOO MANY CREDITS!"); //daca are prea multe credite
-                    case "already enrolled" -> messageLabel.setText("YOU ARE ALREADY ENROLLED IN THIS COURSE!"); //daca e deja inscris la curs
-                    case "incorrect" -> messageLabel.setText("INVALID COURSE NAME. PLEASE TRY AGAIN!"); //daca cursul nu exista
-                    default -> messageLabel.setText("THIS COURSE HAS NO FREE PLACES. PLEASE CHOOSE ANOTHER ONE!"); //daca cursul nu mai are locuri libere
+                if (controller.registerStud(id[0], inputCourse.getText()).equals("enrolled")) {
+                    messageLabel.setText("YOU ARE NOW ENROLLED IN THE COURSE!"); //daca a reusit sa se inscrie
+                    messageLabel.setTextFill(Color.web("#36BF2B"));
                 }
+                else {
+                    messageLabel.setTextFill(Color.web("#ED2A3F"));
+                    switch (controller.registerStud(id[0], inputCourse.getText())) {
+                        case "credits" -> messageLabel.setText("YOU HAVE TOO MANY CREDITS!"); //daca are prea multe credite
+                        case "already enrolled" -> messageLabel.setText("YOU ARE ALREADY ENROLLED IN THIS COURSE!"); //daca e deja inscris la curs
+                        case "incorrect" -> messageLabel.setText("INVALID COURSE NAME. PLEASE TRY AGAIN!"); //daca cursul nu exista
+                        default -> messageLabel.setText("THIS COURSE HAS NO FREE PLACES. \n    PLEASE CHOOSE ANOTHER ONE!"); //daca cursul nu mai are locuri libere
+                    }
+                }
+            }));
+
+            //back button
+            Button backButton = new Button("BACK");
+            backButton.setPrefSize(170, 45);
+            backButton.setStyle("-fx-background-color: #89B3F5");
+            backButton.setOnAction((event1 -> {
+                primaryStage.setScene(studScene);
+                primaryStage.show();
             }));
 
             //box label + input
@@ -191,7 +206,7 @@ public class StartApp extends Application {
             VBox totalEnrolBox = new VBox();
             totalEnrolBox.setSpacing(25);
             totalEnrolBox.setPadding(new Insets(50, 0, 0, 125));
-            totalEnrolBox.getChildren().addAll(courseBox, buttonBox, messageBox);
+            totalEnrolBox.getChildren().addAll(courseBox, buttonBox, messageBox, backButton);
             ((Group) enrolScene.getRoot()).getChildren().add(totalEnrolBox);
 
 
@@ -203,11 +218,89 @@ public class StartApp extends Application {
         Button showAvailableButton = new Button("AVAILABLE COURSES");
         showAvailableButton.setPrefSize(170, 45);
         showAvailableButton.setStyle("-fx-background-color: #89B3F5");
+        showAvailableButton.setOnAction((event -> {
+            Scene showAvScene = new Scene(new Group(), 900, 600); //TODO: SCENE MAI MIC
+            primaryStage.setScene(showAvScene);
+            primaryStage.show();
 
+            Label showAvLabel = new Label(controller.showAvailableCourses());
+
+            //back button
+            Button backButton = new Button("BACK");
+            backButton.setPrefSize(170, 45);
+            backButton.setStyle("-fx-background-color: #89B3F5");
+            backButton.setOnAction((event1 -> {
+                primaryStage.setScene(studScene);
+                primaryStage.show();
+            }));
+
+            //box complet pagina show available courses
+            VBox totalShowAvBox = new VBox();
+            totalShowAvBox.setSpacing(25);
+            totalShowAvBox.setPadding(new Insets(50, 0, 0, 125));
+            totalShowAvBox.getChildren().addAll(showAvLabel, backButton);
+            ((Group) showAvScene.getRoot()).getChildren().add(totalShowAvBox);
+
+        }));
+
+        //buton show all courses
         Button showCourseButton = new Button("COURSES");
         showCourseButton.setPrefSize(170, 45);
         showCourseButton.setStyle("-fx-background-color: #89B3F5");
+        showCourseButton.setOnAction((event -> {
+            Scene showCoursesScene = new Scene(new Group(), 900, 600); //TODO: SCENE MAI MIC
+            primaryStage.setScene(showCoursesScene);
+            primaryStage.show();
 
+            Label showCoursesLabel = new Label(controller.showAllCourses());
+
+            //back button
+            Button backButton = new Button("BACK");
+            backButton.setPrefSize(170, 45);
+            backButton.setStyle("-fx-background-color: #89B3F5");
+            backButton.setOnAction((event1 -> {
+                primaryStage.setScene(studScene);
+                primaryStage.show();
+            }));
+
+            //box complet pagina show available courses
+            VBox totalShowCoursesBox = new VBox();
+            totalShowCoursesBox.setSpacing(25);
+            totalShowCoursesBox.setPadding(new Insets(50, 0, 0, 125));
+            totalShowCoursesBox.getChildren().addAll(showCoursesLabel, backButton);
+            ((Group) showCoursesScene.getRoot()).getChildren().add(totalShowCoursesBox);
+        }));
+
+        //button show my courses
+        Button showMyCoursesButton = new Button("MY COURSES");
+        showMyCoursesButton.setPrefSize(170, 45);
+        showMyCoursesButton.setStyle("-fx-background-color: #89B3F5");
+        showMyCoursesButton.setOnAction((event -> {
+            Scene showMyCoursesScene = new Scene(new Group(), 900, 600); //TODO: SCENE MAI MIC
+            primaryStage.setScene(showMyCoursesScene);
+            primaryStage.show();
+
+
+            Label showMyCoursesLabel = new Label(controller.showMyCourses(id[0]));
+
+            //back button
+            Button backButton = new Button("BACK");
+            backButton.setPrefSize(170, 45);
+            backButton.setStyle("-fx-background-color: #89B3F5");
+            backButton.setOnAction((event1 -> {
+                primaryStage.setScene(studScene);
+                primaryStage.show();
+            }));
+
+            //box complet pagina show available courses
+            VBox totalShowMyCoursesBox = new VBox();
+            totalShowMyCoursesBox.setSpacing(25);
+            totalShowMyCoursesBox.setPadding(new Insets(50, 0, 0, 125));
+            totalShowMyCoursesBox.getChildren().addAll(showMyCoursesLabel, backButton);
+            ((Group) showMyCoursesScene.getRoot()).getChildren().add(totalShowMyCoursesBox);
+        }));
+
+        //log out button
         Button logOutButton = new Button("LOG OUT");
         logOutButton.setPrefSize(170, 45);
         logOutButton.setStyle("-fx-background-color: #89B3F5");
@@ -220,15 +313,28 @@ public class StartApp extends Application {
             }
         });
 
-        HBox studentBox = new HBox();
-        studentBox.setSpacing(25);
-        studentBox.setPadding(new Insets(50, 0, 0, 125));
-        studentBox.getChildren().addAll(enrolButton, showAvailableButton, showCourseButton);
+
+        VBox student1Box = new VBox();
+        student1Box.setSpacing(25);
+        student1Box.setPadding(new Insets(50, 0, 0, 125));
+        student1Box.getChildren().addAll(enrolButton, showMyCoursesButton);
+
+
+        VBox student2Box = new VBox();
+        student2Box.setSpacing(25);
+        student2Box.setPadding(new Insets(50, 0, 0, 125));
+        student2Box.getChildren().addAll(showAvailableButton, showCourseButton);
 
         HBox logOutBox = new HBox();
         logOutBox.setSpacing(25);
         logOutBox.setPadding(new Insets(500, 0, 0, 500));
         logOutBox.getChildren().addAll(logOutButton);
+
+        HBox studentBox = new HBox();
+        studentBox.setSpacing(25);
+        studentBox.setPadding(new Insets(50, 0, 0, 125));
+        studentBox.getChildren().addAll(student1Box, student2Box);
+
 
         VBox studentTotalBox = new VBox();
         studentTotalBox.setSpacing(25);
