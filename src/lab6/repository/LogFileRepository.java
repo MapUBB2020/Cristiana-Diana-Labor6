@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LogFileRepository {
-    public List<String> eMails = new ArrayList<>();
-    public List<String> passwords = new ArrayList<>();
+    public List<String> eMails = new ArrayList<>(); //lista cu toate eMail-urile
+    public List<String> passwords = new ArrayList<>(); //lista cu toate parolele
 
 
     public LogFileRepository() {

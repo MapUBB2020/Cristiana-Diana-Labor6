@@ -12,7 +12,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import lab6.controller.Controller;
 import lab6.repository.LogFileRepository;
@@ -37,90 +39,160 @@ public class StartApp extends Application {
 
         Label message = new Label(); //mesaj eroare
 
-        //TODO: LABEL EMAIL SI PSWD + ARANJARE PAG
+        //label welcome
+        Label welcome = new Label("Welcome!");
+        welcome.setFont(new Font("Arial", 55));
+        welcome.setTextFill(Color.web("#89B3F5"));
+
+        //label email si password
+        Label labelEMail = new Label("Email Address: ");
+        labelEMail.setFont(new Font("Arial", 24));
+
+        Label labelPassword = new Label("Password: ");
+        labelPassword.setFont(new Font("Arial", 24));
 
         //input email si password
         TextField inputEMail = new TextField();
-        inputEMail.setMaxWidth(200);
-        inputEMail.setFont(new Font("Arial", 18));
+        inputEMail.setMaxWidth(500);
+        inputEMail.setFont(new Font("Arial", 20));
 
         PasswordField inputPassword = new PasswordField();
-        inputPassword.setMaxWidth(200);
-        inputPassword.setFont(new Font("Arial", 18));
+        inputPassword.setMaxWidth(500);
+        inputPassword.setFont(new Font("Arial", 20));
 
         //buton LOG IN
         Button logInButton = new Button("LOG IN");
-        logInButton.setPrefSize(170, 45);
+        logInButton.setPrefSize(120, 35);
+        logInButton.setFont(new Font("Arial", 14));
         logInButton.setStyle("-fx-background-color: #89B3F5");
         logInButton.setOnAction((event -> {
             String eMail = inputEMail.getText();
             String pswd = inputPassword.getText();
 
+            //cautam in lista de eMail-uri
             for (int i = 0; i < controller.logFileRepository.eMails.size(); i++) {
+                //daca gaseste eMail-ul si parola date ca input in lista cu eMail-uri si parole ale studentilor => e student
                 if (i < controller.studEMails.size() && controller.studEMails.get(i).equals(eMail) && controller.studPasswords.get(i).equals(pswd)) {
                     id[0] = controller.pswdToId(pswd);
-                    primaryStage.setScene(studScene);
+                    primaryStage.setScene(studScene); //deschide pagina destinata studentilor
                     primaryStage.show();
                     break;
                 }
+                //daca gaseste eMail-ul si parola date ca input in lista cu eMail-uri si parole ale profesorilor => e profesor
                 if (i < controller.teacherEMails.size() && controller.teacherEMails.get(i).equals(eMail) && controller.teacherPasswords.get(i).equals(pswd)) {
                     id[0] = controller.pswdToId(pswd);
-                    primaryStage.setScene(teacherScene);
+                    primaryStage.setScene(teacherScene); //deschide pagina destinata profesorilor
                     primaryStage.show();
                     break;
                 }
             }
-            inputEMail.clear();
+            //daca introduce gresit eMail-ul/parola
+            inputEMail.clear(); //stergem ce a scris in text field-uri
             inputPassword.clear();
-            message.setText("E-Mail or password incorrect. Please try again!");
-            message.setFont(new Font("Arial", 16));
+            message.setText("Email or password incorrect. Please try again!");
+            message.setFont(new Font("Arial", 20));
             message.setTextFill(javafx.scene.paint.Color.web("#ED2A3F"));
 
 
         }));
 
-        VBox loginBox = new VBox();
-        loginBox.setSpacing(25);
-        loginBox.setPadding(new Insets(50, 0, 0, 125));
-        loginBox.getChildren().addAll(inputEMail, inputPassword, logInButton, message);
-        ((Group) logInScene.getRoot()).getChildren().add(loginBox);
+        //box mesaj welcome
+        VBox welcomeBox = new VBox();
+        welcomeBox.setSpacing(40);
+        welcomeBox.setPadding(new Insets(55, 0, 0, 320));
+        welcomeBox.getChildren().add(welcome);
 
+        //box label email + label password
+        VBox labelBox = new VBox();
+        labelBox.setSpacing(40);
+        labelBox.setPadding(new Insets(55, 0, 0, 155));
+        labelBox.getChildren().addAll(labelEMail, labelPassword);
+
+        //box log in buton
+        HBox logButtonBox = new HBox();
+        logButtonBox.setSpacing(25);
+        logButtonBox.setPadding(new Insets(50, 0, 0, 155));
+        logButtonBox.getChildren().add(logInButton);
+
+        //box input-uri
+        VBox inputBox = new VBox();
+        inputBox.setSpacing(25);
+        inputBox.setPadding(new Insets(50, 0, 0, 125));
+        inputBox.getChildren().addAll(inputEMail, inputPassword, logButtonBox);
+
+        //box label + input
+        HBox logInBox = new HBox();
+        logInBox.setSpacing(0);
+        logInBox.setPadding(new Insets(100, 0, 0, 30));
+        logInBox.getChildren().addAll(labelBox, inputBox);
+
+        //total box pentru pagina de log in
+        VBox totalBox = new VBox();
+        totalBox.setSpacing(10);
+        totalBox.setPadding(new Insets(20, 0, 0, 125));
+        totalBox.getChildren().addAll(welcomeBox, logInBox, message);
+        ((Group) logInScene.getRoot()).getChildren().add(totalBox);
 
         //main page students
         Button enrolButton = new Button("ENROL");
         enrolButton.setPrefSize(170, 45);
         enrolButton.setStyle("-fx-background-color: #89B3F5");
         enrolButton.setOnAction((event -> {
-            Scene enrolScene = new Scene(new Group(), 1100, 800); //TODO: SCENE MAI MIC
+            Scene enrolScene = new Scene(new Group(), 900, 600); //TODO: SCENE MAI MIC
             primaryStage.setScene(enrolScene);
             primaryStage.show();
 
+            //label mesaj
             Label messageLabel = new Label();
+            messageLabel.setFont(new Font("Arial", 20));
+
+            //label course name
+            Label courseName = new Label("Course: ");
+            courseName.setFont(new Font("Arial", 24));
 
             TextField inputCourse = new TextField();
-            inputCourse.setMaxWidth(200);
-            inputCourse.setFont(new Font("Arial", 18));
+            inputCourse.setMaxWidth(500);
+            inputCourse.setFont(new Font("Arial", 20));
+            inputCourse.setPromptText("Type the name of the course");
             //TODO: VF DC INPUT STRING
 
             Button enrolMeButton = new Button("ENROL ME!");
             enrolMeButton.setPrefSize(170, 45);
             enrolMeButton.setStyle("-fx-background-color: #89B3F5");
             enrolMeButton.setOnAction((event1 -> {
-                //succes
                 switch (controller.registerStud(id[0], inputCourse.getText())) {
-                    case "enrolled" -> messageLabel.setText("YES");
-                    case "credits" -> messageLabel.setText("PREA MULTE CREDITE");
-                    case "already enrolled" -> messageLabel.setText("ALREADY ENROLLED");
-                    case "incorrect" -> messageLabel.setText("INVALID COURSE NAME");
-                    default -> messageLabel.setText("FULL");
+                    case "enrolled" -> messageLabel.setText("YOU ARE NOW ENROLLED IN THE COURSE!"); //daca a reusit sa se inscrie
+                    case "credits" -> messageLabel.setText("YOU HAVE TOO MANY CREDITS!"); //daca are prea multe credite
+                    case "already enrolled" -> messageLabel.setText("YOU ARE ALREADY ENROLLED IN THIS COURSE!"); //daca e deja inscris la curs
+                    case "incorrect" -> messageLabel.setText("INVALID COURSE NAME. PLEASE TRY AGAIN!"); //daca cursul nu exista
+                    default -> messageLabel.setText("THIS COURSE HAS NO FREE PLACES. PLEASE CHOOSE ANOTHER ONE!"); //daca cursul nu mai are locuri libere
                 }
             }));
 
-            VBox enrolBox = new VBox();
-            enrolBox.setSpacing(25);
-            enrolBox.setPadding(new Insets(50, 0, 0, 125));
-            enrolBox.getChildren().addAll(inputCourse, enrolMeButton, messageLabel);
-            ((Group) enrolScene.getRoot()).getChildren().add(enrolBox);
+            //box label + input
+            HBox courseBox = new HBox();
+            courseBox.setSpacing(25);
+            courseBox.setPadding(new Insets(60, 0, 0, 125));
+            courseBox.getChildren().addAll(courseName, inputCourse);
+
+            //box buton enroll me
+            VBox buttonBox = new VBox();
+            buttonBox.setSpacing(25);
+            buttonBox.setPadding(new Insets(60, 0, 0, 320));
+            buttonBox.getChildren().add(enrolMeButton);
+
+            //box mesaj label
+            HBox messageBox = new HBox();
+            messageBox.setSpacing(25);
+            messageBox.setPadding(new Insets(70, 0, 0, 150));
+            messageBox.getChildren().add(messageLabel);
+
+            //box complet pagina enrol
+            VBox totalEnrolBox = new VBox();
+            totalEnrolBox.setSpacing(25);
+            totalEnrolBox.setPadding(new Insets(50, 0, 0, 125));
+            totalEnrolBox.getChildren().addAll(courseBox, buttonBox, messageBox);
+            ((Group) enrolScene.getRoot()).getChildren().add(totalEnrolBox);
 
 
         }));
@@ -139,6 +211,14 @@ public class StartApp extends Application {
         Button logOutButton = new Button("LOG OUT");
         logOutButton.setPrefSize(170, 45);
         logOutButton.setStyle("-fx-background-color: #89B3F5");
+        logOutButton.setOnAction((event2) -> {
+            try {
+                //revine la prima pagina
+                start(primaryStage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
         HBox studentBox = new HBox();
         studentBox.setSpacing(25);

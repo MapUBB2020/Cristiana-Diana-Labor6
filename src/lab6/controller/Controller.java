@@ -9,23 +9,22 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: COMENTARII + JAVA DOCS
-
 public class Controller {
-    public List<Course> allCourses = new ArrayList<>();
-    public List<Student> allStudents = new ArrayList<>();
-    public List<Teacher> allTeachers = new ArrayList<>();
+    public List<Course> allCourses = new ArrayList<>(); //lista cu toate cursurile
+    public List<Student> allStudents = new ArrayList<>(); //lista cu toti studentii
+    public List<Teacher> allTeachers = new ArrayList<>(); //lista cu toti profesorii
     public LogFileRepository logFileRepository;
     public CourseFileRepo courseFileRepo;
     public StudentFileRepo studentFileRepo;
     public TeacherFileRepo teacherFileRepo;
 
-    public List<String> studEMails = new ArrayList<>();
-    public List<String> studPasswords = new ArrayList<>();
+    public List<String> studEMails = new ArrayList<>(); //lista cu toate eMail-urile studentilor
+    public List<String> studPasswords = new ArrayList<>(); //lista cu toate parolele studentilor
 
-    public List<String> teacherEMails = new ArrayList<>();
-    public List<String> teacherPasswords = new ArrayList<>();
+    public List<String> teacherEMails = new ArrayList<>(); //lista cu toate eMail-urile profesorilor
+    public List<String> teacherPasswords = new ArrayList<>(); //lista cu toate parolele profesorilor
 
+    //constructor
     public Controller() {
         logFileRepository = new LogFileRepository();
         courseFileRepo = new CourseFileRepo();
@@ -34,19 +33,23 @@ public class Controller {
     }
 
     public void declareData() throws FileNotFoundException {
+        //citim datele din fisier pentru courses/students/teachers/accounts
         allCourses = courseFileRepo.readCourses();
         allTeachers = courseFileRepo.teacherData();
         allStudents = courseFileRepo.studentData();
         logFileRepository.readAccounts();
 
+        //cautam in lista cu toate eMail-urile
         for (int i = 0; i < logFileRepository.eMails.size(); i++) {
+            //daca eMail-ul are la sfarsit "@stud.ubbcluj.ro" => e student
             if ((logFileRepository.eMails.get(i).substring(logFileRepository.eMails.get(i).length() - 16)).equals("@stud.ubbcluj.ro")) {
-                studEMails.add(logFileRepository.eMails.get(i));
-                studPasswords.add(logFileRepository.passwords.get(i));
+                studEMails.add(logFileRepository.eMails.get(i)); //adaugam eMail-ul la lista de eMail-uri pentru studenti
+                studPasswords.add(logFileRepository.passwords.get(i)); //adaugam parola la lista de parole pentru studenti
             }
             else {
-                teacherEMails.add(logFileRepository.eMails.get(i));
-                teacherPasswords.add(logFileRepository.passwords.get(i));
+                //daca eMail-ul nu are la sfarsit "@stud.ubbcluj.ro" => e profesor
+                teacherEMails.add(logFileRepository.eMails.get(i)); //adaugam eMail-ul la lista de eMail-uri pentru profesori
+                teacherPasswords.add(logFileRepository.passwords.get(i)); //adaugam parola la lista de parole pentru profesori
             }
         }
     }
@@ -60,7 +63,14 @@ public class Controller {
         return Integer.parseInt(pswd.substring(6));
     }
 
-
+    /**
+     * enrol a student in a course
+     * @param studId - id-ul studentului
+     * @param courseName - numele cursului
+     * @return - "incorrect" daca nu a pus datele corect, "credits" daca studentul are mai mult de 30 de credite,
+     * "enrolled" daca studentul a fost inregistrat cu succes, "already enrolled" daca studentul e deja inscris la cursul ales,
+     * "full" daca cursul ales nu mai are locuri libere
+     */
     public String registerStud(int studId, String courseName) {
         Student student = new Student();
         Course course = new Course();
@@ -77,15 +87,18 @@ public class Controller {
         if (course.getStudentsEnrolled() == null) {
             return "incorrect";
         }
+        //verificam daca cursul mai are locuri libere
         if (course.getMaxEnrollment() - course.getStudentsEnrolled().size() > 0) {
+            //verificam daca studentul nu e deja inscris la curs
             if (!student.getEnrolledCourses().contains(course)) {
+                //verificam daca studentul are mai mult de 30 de credite
                 if (student.getTotalCredits() + course.getCredits() > 30) {
                     return "credits";
                 }
                 CourseRepository coursesFromStud = new CourseRepository(student.getEnrolledCourses());
-                coursesFromStud.save(course);
+                coursesFromStud.save(course); //salvam cursul in lista cu cursuri ale studentului
                 List<Integer> studentsFromCourse = course.getStudentsEnrolled();
-                studentsFromCourse.add(student.getStudentId());
+                studentsFromCourse.add(student.getStudentId()); //salvam studentul in lista cu studenti ale cursului
                 return "enrolled";
             }
             else {
