@@ -129,6 +129,28 @@ public class Controller {
         return show.toString();
     }
 
+
+    public String studProfile(int studId) {
+        StringBuilder show = new StringBuilder();
+        for (Student student : allStudents) {
+            if (student.getStudentId() == studId) {
+                show.append("ID: ").append(studId).append("\n")
+                        .append("Name: ").append(student.getFirstName()). append(" ").append(student.getLastName()).append("\n")
+                        .append("Credits: ").append(student.getTotalCredits()).append("\n")
+                        .append("My courses: ");
+                if (!student.getEnrolledCourses().isEmpty()) {
+                    for (Course course : student.getEnrolledCourses()) {
+                        show.append(course.getName()).append("; ");
+                    }
+                }
+                show.append("\n");
+            }
+        }
+        return show.toString();
+
+    }
+
+
     public String showAllCourses() {
         StringBuilder show = new StringBuilder();
         CourseRepository courseRepository = new CourseRepository(allCourses);
@@ -140,30 +162,131 @@ public class Controller {
             show.append(course.getName());
             for (Teacher teacher : allTeachers) {
                 if (teacher.getTeacherId() == course.getTeacher()) {
-                    show.append(", teacher: ").append(teacher.getFirstName()).append(" ").append(teacher.getLastName()).append("\n");
+                    show.append(", Teacher: ").append(teacher.getFirstName()).append(" ").append(teacher.getLastName());
                 }
             }
+            show.append(", Max enrollment: ").append(course.getMaxEnrollment()).append(", Credits: ").append(course.getCredits()).append("\n");
 
         }
         return show.toString();
     }
 
-    public String showMyCourses(int studentId) {
-        Student student = new Student();
-        for (Student stud : allStudents) {
-            if (stud.getStudentId() == studentId) {
-                student = stud;
+
+    public String showAllStudents() {
+        StringBuilder show = new StringBuilder();
+        StudentRepository studentRepository = new StudentRepository(allStudents);
+        if (studentRepository.findAll() == null) {
+            show.append("There are no students!");
+            return show.toString();
+        }
+        for (Student student : studentRepository.findAll()) {
+            show.append("ID: ").append(student.getStudentId()).append(", Name: ").append(student.getFirstName()).append(" ").append(student.getLastName());
+            if (!student.getEnrolledCourses().isEmpty()) {
+                show.append(", Enrolled in: ");
+                for (Course course : student.getEnrolledCourses()) {
+                    show.append(course.getName()).append("; ");
+                }
+            }
+            show.append(" Credits: ").append(student.getTotalCredits()).append("\n");
+        }
+        return show.toString();
+    }
+
+    public String showAllTeachers() {
+        StringBuilder show = new StringBuilder();
+        if (allTeachers.isEmpty()) {
+            show.append("There are no teachers!");
+            return show.toString();
+        }
+        for (Teacher teacher : allTeachers) {
+            show.append("Name: ").append(teacher.getFirstName()).append(" ").append(teacher.getLastName());
+            if (!teacher.getCourses().isEmpty()) {
+                show.append(", Courses: ");
+                for (Course course : teacher.getCourses()) {
+                    show.append(course.getName()).append("; ");
+                }
+            }
+            show.append("\n");
+        }
+        return show.toString();
+    }
+
+    public String showTeacherCourses(int teacherId) {
+        Teacher teacher = new Teacher();
+        for (Teacher teach : allTeachers) {
+            if (teach.getTeacherId() == teacherId) {
+                teacher = teach;
             }
         }
         StringBuilder show = new StringBuilder();
-        if (student.getEnrolledCourses().isEmpty()) {
-            show.append("You are not enrolled in any course");
+        if (teacher.getCourses().isEmpty()) {
+            show.append("You do not teach any course");
             return show.toString();
         }
-        for (Course course : student.getEnrolledCourses()) {
-            show.append(course.getName()).append("\n");
+        for (Course course : teacher.getCourses()) {
+            StudentRepository studentRepository = new StudentRepository(allStudents);
+            show.append("Course: ").append(course.getName()).append("\n");
+            for (int studId : course.getStudentsEnrolled()) {
+                show.append(studentRepository.findOne(studId).getFirstName()).append(" ")
+                        .append(studentRepository.findOne(studId).getLastName()).append("\n");
+            }
+            show.append("\n\n");
         }
         return show.toString();
     }
 
+    public String showStudFromCourse(String courseName) {
+        StringBuilder show = new StringBuilder();
+        boolean found = false;
+        for (Course course : allCourses) {
+            if (course.getName().equals(courseName)) {
+                found = true;
+                show.append("Course: ").append(course.getName()).append("\n");
+                StudentRepository studentRepository = new StudentRepository(allStudents);
+                for (int studId : course.getStudentsEnrolled()) {
+                    show.append(studentRepository.findOne(studId).getFirstName()).append(" ")
+                            .append(studentRepository.findOne(studId).getLastName()).append("\n");
+                }
+            }
+        }
+        if (!found) {
+            show.append("incorrect");
+        }
+        return show.toString();
+    }
+
+
+    public String deleteCourse(String courseName, int teacherId) {
+        Teacher teacher = new Teacher();
+        Course course = new Course();
+        boolean found = false;
+        for (Teacher teach : allTeachers) {
+            if (teach.getTeacherId() == teacherId) {
+                for (Course c : teach.getCourses()) {
+                    if (c.getName().equals(courseName)) {
+                        teacher = teach;
+                        course = c;
+                        found = true;
+                    }
+                }
+            }
+        }
+        if (!found) {
+            return "incorrect";
+        }
+        CourseRepository teacherCourses = new CourseRepository(teacher.getCourses());
+        Course deletedCourse = teacherCourses.delete(course.getId());
+        CourseRepository courses = new CourseRepository(allCourses);
+        courses.delete(course.getId());
+        if (deletedCourse != null) {
+            course.setStudentsEnrolled(new ArrayList<>());
+            for (Student student : allStudents) {
+                student.getEnrolledCourses().remove(course);
+            }
+            return "deleted";
+        }
+        else {
+            return "incorrect";
+        }
+    }
 }

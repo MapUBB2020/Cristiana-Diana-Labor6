@@ -1,3 +1,6 @@
-1, Ana, Maria, [1]
-2, Paul, Popescu, [2]
-3, Oana, Antonescu, [3]
+1, Ana, Maria
+2, Catalin, Rusu
+3, Diana, Cristea
+4, Paul, Popescu
+5, Radu, Dragos
+6, Oana, Maria

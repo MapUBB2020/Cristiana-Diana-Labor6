@@ -23,7 +23,7 @@ public class Course {
         this.credits = credits;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
