@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import lab6.controller.Controller;
 import lab6.model.Student;
 import lab6.repository.LogFileRepository;
+import lab6.repository.StudentRepository;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -135,11 +136,13 @@ public class StartApp extends Application {
         ((Group) logInScene.getRoot()).getChildren().add(totalBox);
 
         //main page students
+
+        //button enroll me
         Button enrolButton = new Button("ENROL");
         enrolButton.setPrefSize(170, 45);
         enrolButton.setStyle("-fx-background-color: #89B3F5");
         enrolButton.setOnAction((event -> {
-            Scene enrolScene = new Scene(new Group(), 900, 600); //TODO: SCENE MAI MIC
+            Scene enrolScene = new Scene(new Group(), 900, 600);
             primaryStage.setScene(enrolScene);
             primaryStage.show();
 
@@ -152,10 +155,12 @@ public class StartApp extends Application {
             Label courseName = new Label("Course: ");
             courseName.setFont(new Font("Arial", 24));
 
+            //input course name
             TextField inputCourse = new TextField();
             inputCourse.setMaxWidth(500);
             inputCourse.setFont(new Font("Arial", 20));
 
+            //button enroll me
             Button enrolMeButton = new Button("ENROL ME!");
             enrolMeButton.setPrefSize(170, 45);
             enrolMeButton.setStyle("-fx-background-color: #89B3F5");
@@ -190,7 +195,7 @@ public class StartApp extends Application {
             courseBox.setPadding(new Insets(60, 0, 0, 125));
             courseBox.getChildren().addAll(courseName, inputCourse);
 
-            //box buton enroll me
+            //box button enroll me
             VBox buttonBox = new VBox();
             buttonBox.setSpacing(25);
             buttonBox.setPadding(new Insets(60, 0, 0, 320));
@@ -212,14 +217,13 @@ public class StartApp extends Application {
 
         }));
 
-        //TODO: ARANJARE PAG
 
-        //butoane meniu student
+        //button available courses
         Button showAvailableButton = new Button("AVAILABLE COURSES");
         showAvailableButton.setPrefSize(170, 45);
         showAvailableButton.setStyle("-fx-background-color: #89B3F5");
         showAvailableButton.setOnAction((event -> {
-            Scene showAvScene = new Scene(new Group(), 900, 600); //TODO: SCENE MAI MIC
+            Scene showAvScene = new Scene(new Group(), 900, 600);
             primaryStage.setScene(showAvScene);
             primaryStage.show();
 
@@ -243,12 +247,12 @@ public class StartApp extends Application {
 
         }));
 
-        //buton show all courses
+        //button show all courses
         Button showCourseButton = new Button("COURSES");
         showCourseButton.setPrefSize(170, 45);
         showCourseButton.setStyle("-fx-background-color: #89B3F5");
         showCourseButton.setOnAction((event -> {
-            Scene showCoursesScene = new Scene(new Group(), 900, 600); //TODO: SCENE MAI MIC
+            Scene showCoursesScene = new Scene(new Group(), 900, 600);
             primaryStage.setScene(showCoursesScene);
             primaryStage.show();
 
@@ -276,7 +280,7 @@ public class StartApp extends Application {
         showMyCoursesButton.setPrefSize(170, 45);
         showMyCoursesButton.setStyle("-fx-background-color: #89B3F5");
         showMyCoursesButton.setOnAction((event -> {
-            Scene showMyCoursesScene = new Scene(new Group(), 900, 600); //TODO: SCENE MAI MIC
+            Scene showMyCoursesScene = new Scene(new Group(), 900, 600);
             primaryStage.setScene(showMyCoursesScene);
             primaryStage.show();
 
@@ -313,35 +317,36 @@ public class StartApp extends Application {
             }
         });
 
-
+        //box enroll me button + my courses button
         VBox student1Box = new VBox();
-        student1Box.setSpacing(25);
+        student1Box.setSpacing(45);
         student1Box.setPadding(new Insets(50, 0, 0, 125));
         student1Box.getChildren().addAll(enrolButton, showMyCoursesButton);
 
-
+        //box available courses button + all courses button
         VBox student2Box = new VBox();
-        student2Box.setSpacing(25);
+        student2Box.setSpacing(45);
         student2Box.setPadding(new Insets(50, 0, 0, 125));
         student2Box.getChildren().addAll(showAvailableButton, showCourseButton);
 
+        //box log out button
         HBox logOutBox = new HBox();
         logOutBox.setSpacing(25);
-        logOutBox.setPadding(new Insets(500, 0, 0, 500));
+        logOutBox.setPadding(new Insets(200, 0, 0, 505));
         logOutBox.getChildren().addAll(logOutButton);
 
+        //box student buttons
         HBox studentBox = new HBox();
         studentBox.setSpacing(25);
-        studentBox.setPadding(new Insets(50, 0, 0, 125));
+        studentBox.setPadding(new Insets(250, 0, 0, 55));
         studentBox.getChildren().addAll(student1Box, student2Box);
 
-
+        //box complet pagina student
         VBox studentTotalBox = new VBox();
         studentTotalBox.setSpacing(25);
         studentTotalBox.setPadding(new Insets(50, 0, 0, 125));
         studentTotalBox.getChildren().addAll(studentBox, logOutBox);
         ((Group) studScene.getRoot()).getChildren().addAll(studentTotalBox);
-
 
 
         primaryStage.setScene(logInScene);
