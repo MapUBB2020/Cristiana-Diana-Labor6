@@ -109,6 +109,7 @@ public class Controller {
         }
     }
 
+    //show available courses + free places
     public String showAvailableCourses() {
         StringBuilder show = new StringBuilder();
         CourseRepository courseRepository = new CourseRepository(allCourses);
@@ -129,7 +130,11 @@ public class Controller {
         return show.toString();
     }
 
-
+    /**
+     *
+     * @param studId id student
+     * @return string profil
+     */
     public String studProfile(int studId) {
         StringBuilder show = new StringBuilder();
         for (Student student : allStudents) {
@@ -139,9 +144,9 @@ public class Controller {
                         .append("Credits: ").append(student.getTotalCredits()).append("\n")
                         .append("My courses: ");
                 if (!student.getEnrolledCourses().isEmpty()) {
-                    for (Course course : student.getEnrolledCourses()) {
-                        show.append(course.getName()).append("; ");
-                    }
+
+                    //LAMBDA EXPRESSION
+                    student.getEnrolledCourses().forEach((course) -> {show.append(course.getName()).append("; ");});
                 }
                 show.append("\n");
             }
@@ -211,6 +216,11 @@ public class Controller {
         return show.toString();
     }
 
+    /**
+     *
+     * @param teacherId id teacher
+     * @return string cu teacher's courses
+     */
     public String showTeacherCourses(int teacherId) {
         Teacher teacher = new Teacher();
         for (Teacher teach : allTeachers) {
@@ -235,6 +245,11 @@ public class Controller {
         return show.toString();
     }
 
+    /**
+     *
+     * @param courseName nume curs
+     * @return dc e gresit => incorrect, altfel => studentii cursului
+     */
     public String showStudFromCourse(String courseName) {
         StringBuilder show = new StringBuilder();
         boolean found = false;
@@ -256,6 +271,12 @@ public class Controller {
     }
 
 
+    /**
+     *
+     * @param courseName nume curs
+     * @param teacherId id teacher
+     * @return incorrect dc nu s-a sters, altfel => deleted
+     */
     public String deleteCourse(String courseName, int teacherId) {
         Teacher teacher = new Teacher();
         Course course = new Course();
